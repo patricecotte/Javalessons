@@ -9,6 +9,7 @@ public class Sdz1 {
 	 * 					reading, writing to the console
 	 * 					if, while structures
 	 * 					loops 
+	 * 					useful methods
 	 * Version		= 1.0
 	 * Dependencies	= none
 	 */
@@ -69,7 +70,7 @@ public class Sdz1 {
 		
 	// Operators -,* and / can be used also as above.
 		int resultat = num1/num1;
-		System.out.println("Résultat:"+resultat);
+		System.out.println("Rï¿½sultat:"+resultat);
 		
 	// Variable cast. A conversion may be required when the source and target variables
 	// are of different types.
@@ -221,6 +222,26 @@ public class Sdz1 {
 				}
 			d1++; d2=0;
 		}
+		
+		// Part 5 - a number of useful methods
+		// -------------------------------------------------------------
+		String table1[] = new String[6];
+		table1[0] = "This is mixed case text";
+		table1[1] = table1[0].toUpperCase();
+		table1[2] = table1[0].toLowerCase();
+		if (table1[0].length() == table1[1].length())
+			table1[3] = "table rows 0 and 1 have the same length";
+		else table1[3] = "table rows 0 and 1 have different lengths";
+		
+		if (table1[0].equals(table1[1]))
+			table1[4] = "table rows 0 and 1 are the same length";
+		else table1[4] = "table rows 0 and 1 are different";
+		
+		for(count=0; count < table1.length; count++)
+			System.out.println("table1 row "+count+" "+table1[count]);
+			
+		
+		
 		
 // End of main
 	}
