@@ -9,7 +9,6 @@ public class Sdz1 {
 	 * 					reading, writing to the console
 	 * 					if, while structures
 	 * 					loops 
-	 * 					useful methods
 	 * Version		= 1.0
 	 * Dependencies	= none
 	 */
@@ -32,6 +31,7 @@ public class Sdz1 {
 		String strNumber2 = new String("Patrice");
 		String str3;
 		String strNumber4 = new String();
+		String concat = c+c+"";    			// 'CC' 
 		
 	// Declaring variables with operators. Note operators should be used with
 	// variables of same type.
@@ -70,10 +70,11 @@ public class Sdz1 {
 		
 	// Operators -,* and / can be used also as above.
 		int resultat = num1/num1;
-		System.out.println("Rï¿½sultat:"+resultat);
+		System.out.println("Résultat:"+resultat);
 		
 	// Variable cast. A conversion may be required when the source and target variables
-	// are of different types.
+	// are of different types. You cannot cast something into a String as a String is
+	// not a variable.
 		int i=123;
 		float j = (float)i;		// (float) indicates the desired conversion
 		double k = (double)i;	// Cast is actually not needed because
@@ -85,8 +86,8 @@ public class Sdz1 {
 	// String object. Note an Integer also has methods to convert from a string.
 		int n=12; String s = new String(); s = s.valueOf(n);
 		int o = Integer.valueOf(n).intValue();
-		System.out.println("number :"+n+" has been convered into string: "+s);
-		System.out.println("string :"+j+" has been convered into integer: "+o);
+		System.out.println("number :"+n+" has been converted into string: "+s);
+		System.out.println("string :"+j+" has been converted into integer: "+o);
 				
 	// Java 7 enhanced representation
 		double nombre = 1000000000000d; double nombre2 = 1_000_000_000_000d; 
@@ -183,7 +184,7 @@ public class Sdz1 {
 		count = 1;
 		while (++count < 5) System.out.println("count="+count);
 		
-		// do while construct executes at least once. The while is a condition.
+		// do while construct executes at least once. While contains a condition only.
 		
 		response = ' ';
 		do {
@@ -200,7 +201,7 @@ public class Sdz1 {
 		
 		
 		// Part 4 - tables. The first occurrence in a table has the index 0.
-		// a table has specific attributes. Each entry can be accessed using
+		// A table has specific attributes. Each entry can be accessed using
 		// its index
 		int intTab[] = {1,2,3,4,5,6};
 		if (intTab.length > 0) {
@@ -225,26 +226,81 @@ public class Sdz1 {
 		
 		// Part 5 - a number of useful methods
 		// -------------------------------------------------------------
-		String table1[] = new String[6];
+		String table1[] = new String[12];
 		table1[0] = "This is mixed case text";
 		table1[1] = table1[0].toUpperCase();
 		table1[2] = table1[0].toLowerCase();
 		if (table1[0].length() == table1[1].length())
 			table1[3] = "table rows 0 and 1 have the same length";
 		else table1[3] = "table rows 0 and 1 have different lengths";
-		
+
 		if (table1[0].equals(table1[1]))
 			table1[4] = "table rows 0 and 1 are the same length";
 		else table1[4] = "table rows 0 and 1 are different";
+		// note, this transforms our char into a String
+		table1[5] = table1[0].charAt(5)+""; 
+		// extract positions 6 to 13 - length of substring= 
+		table1[6] = table1[4].substring(6,14);  				
+		table1[7] = table1[7].valueOf(table1[1].indexOf('E'));  // integer to String
+		table1[8] = table1[8].valueOf(table1[1].lastIndexOf('E')); // -1 when not found
+		
+		// Math methods. 
+		table1[9] = table1[9].valueOf(Math.random()); 				// double to String
+		table1[10] =table1[10].valueOf(Math.pow(Math.random(),3));	// double to String power 3.
 		
 		for(count=0; count < table1.length; count++)
 			System.out.println("table1 row "+count+" "+table1[count]);
-			
+
+		// Part 6 - invoke user written methods
+		System.out.println("\nNow calling method ProcessTable");
+		ProcessTable(table1);
 		
-		
+		System.out.println("\nNow calling method ConcatTable\n----------------------");
+		System.out.println(ConcatTable(table1));
+		System.out.println("---------------------------\n");
 		
 // End of main
 	}
+	
+	// Part 6 - User written methods. 
+	// ---------------------------------------------------------------------------
+	// scope  [static] return-type name(type-parm1 parm1, …){
+	//	contents
+	//	return return-type-variable;
+	//	}  
+	//
+
+	public static void ProcessTable(String[] tbl){
+		/*
+		 * Input 	a table os strings
+		 * Output	void
+		 * Usage	prints to the console each row in the table
+		 */
+		for(String str:tbl) System.out.println(str); 	// Note the for () writing
+	}
+	
+	public static String ConcatTable(String[] tbl){
+		/* 
+		 * Input	a table
+		 * Output	rows concatenated in one string with line indications
+		 * Usage	prepares a printable format from table rows 
+		 */
+		String returnVar ="";
+		for(String str:tbl) returnVar += str + "\n";
+		return returnVar;
+	}
+	
+	// Method overloading. The below ProcessTable below overloads the above method 
+	// with the same name. 
+	public static void ProcessTable(int[] tbl){
+		/*
+		 * Input 	a table of integers
+		 * Output	void
+		 * Usage	prints to the console each row in the table
+		 */
+		for(int nb:tbl) System.out.println(nb); 	// Note the for () writing
+	}
+	
 // End of class
 }
 
