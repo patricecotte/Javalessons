@@ -40,9 +40,9 @@ public class Town {
 		prvNumInstances++;				// 			on each call 
 	}
 	
-	// Create an overload for Town so that objects can be created with variables and exceptions
+	// Create an overload for Town so that objects can be created with variables.
 	public Town(String Tname, String Cname, int Nbr)
-			throws  InhabitantsNumberException, TownNameException
+			throws  InhabitantsNumberException
 	{
 		if(Nbr< 0)
 		      throw new InhabitantsNumberException(Nbr);   // use alternate Exception class 
@@ -55,26 +55,8 @@ public class Town {
 		pubNumInstances++;				// increment instances
 		prvNumInstances++;				// 			on each call 
 		    }
-		
-		if(Tname.length() < 3)
-			    throw new TownNameException("The name of a town cannot be lesser than 3 characters! " + Tname);
-			  else
-			  {
-			    pubNumInstances++;  
-			    prvNumInstances++;
-			 
-			    townName = Tname;
-			    countryName = Cname;
-			    inhabitantsNumber = Nbr;
-			    this.setCategorie();
-			  }  
 	}
 	
-	private void setCategorie() {
-		// TODO Auto-generated method stub
-		
-	}
-
 	// ACCESSORS and MUTATORS access variables in a Town object.
 	// Accessors have a return type the same type as the extraced variable
 	// Mutators return nothing - void
@@ -175,7 +157,7 @@ class Capital extends Town{
 	}
 	
 	public Capital(String Tname, String CName, int Nbr, String monmt)
-	throws InhabitantsNumberException, TownNameException {
+	throws InhabitantsNumberException {
 		super(Tname, CName, Nbr);
 		this.monument=monmt;
 	}
@@ -203,7 +185,7 @@ class Capital extends Town{
 } // End of class
 
 /*
- * Exceptions for the Town class 
+ * Exception for the Town class 
  */
 class InhabitantsNumberException extends Exception{ 
 	  public InhabitantsNumberException(){
@@ -217,12 +199,6 @@ class InhabitantsNumberException extends Exception{
 	    System.out.println("\t => " + num);
 	  }
 } // End of class
-
-class TownNameException extends Exception { 
-	  public TownNameException(String message){
-	    super(message);
-	  }        
-	}
 
 
 

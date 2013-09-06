@@ -20,24 +20,13 @@ public class Sdz3 {
 		
 	try {
 	 town1 = new Town("Paris", "France", 2000000);
-		} catch (InhabitantsNumberException | TownNameException e2) 
-		     {
-			System.out.println(e2.getMessage());
-		     }  finally{
-		    	    if(town1 == null)
-		    	        town1 = new Town();
-		     			}
+		} catch (InhabitantsNumberException e){}
 	
 	try {
 	 town2 = new Town("Lyon", "France", 1000000);
-		} catch (InhabitantsNumberException | TownNameException e2)
-			{
-			System.out.println(e2.getMessage());
-			} finally{
-	    	    if(town2 == null)
-	    	        town2 = new Town();
-					}
-		
+		} catch (InhabitantsNumberException e){}
+	
+	
 	// interestingly objects within obejct town1 are not visible but the
 	// object itself can be printed. Gives something like Town@734d246
 	System.out.println(town1);
@@ -60,8 +49,7 @@ public class Sdz3 {
 	Capital cap = null;							// Create cap 
 	try {
 		cap = new Capital("Paris","France",-1,"La tour Eiffel");
-		} catch (InhabitantsNumberException | TownNameException e){} 
-	finally { if (cap == null) cap = new Capital();}
+		} catch (InhabitantsNumberException e){} 
 	System.out.println(cap.townInfo());
 	
 	// show townInfo is polymorphic. This means it can (apparently) return different 
@@ -75,14 +63,14 @@ public class Sdz3 {
 			Town T = null;				// create a Town object
 			try{						// override it
 				T = new Town(tab1[i],"United States",tab2[i]);
-				} catch (InhabitantsNumberException | TownNameException e){}
+				} catch (InhabitantsNumberException e){}
 			table[i] = T;
 		}
 		else {
 			Capital C = null;			// Create a Capital object
 			try{						// override it
 				C = new Capital(tab1[i],"United States",tab2[i],"Capitol");
-			} catch (InhabitantsNumberException | TownNameException e){}
+			} catch (InhabitantsNumberException e){}
 			table[i] = C;
 		}
 		
