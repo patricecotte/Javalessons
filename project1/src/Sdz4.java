@@ -13,6 +13,7 @@
 	 *  - Genericity
 	 *  - Genericy and collections
 	 *  - Genericiy, collections and inheritance.
+	 *  java.io.File and Unit and File access. Other File methods; delete, mkdir
 	 */
 	
 // LinkedList collections.
@@ -26,6 +27,12 @@ import java.util.Hashtable;
 // Set collections
 import java.util.HashSet;
 import java.util.Iterator;
+// IO
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 
 public class Sdz4 {
 
@@ -72,7 +79,7 @@ public class Sdz4 {
 	     // Map - note the keys are discontinuous. 
 	     Hashtable ht = new Hashtable();			// Create a Map collection
 	     ht.put(1, "printemps");					// Add 4 elements to it
-	     ht.put(10, "été");
+	     ht.put(10, "ï¿½tï¿½");
 	     ht.put(12, "automne");
 	     ht.put(45, "hiver");
 	  
@@ -157,26 +164,125 @@ public class Sdz4 {
 	       System.out.println(f);  
 	     
 	     // Genericity, collections and inheritance
-	     List<Voiture> listVoiture = new ArrayList<Voiture>();
-	     listVoiture.add(new Voiture());
-	     listVoiture.add(new Voiture());
+	     Car<String> v1 = new Car<String>("Volvo");
+	     Car<String> v2 = new Car<String>("Peugeot");
+	     List<Car> listCar = new ArrayList<Car>();
+	     listCar.add(new Car(v1));
+	     listCar.add(new Car(v2));
 	    
-	     List<Object> listVoitureSP = new ArrayList<Object>();
-	     listVoitureSP.add(new Object());
-	     listVoitureSP.add(new Object());
+	     List<Object> listCarSP = new ArrayList<Object>();
+	     Car sp1 = new Car("VolvoSP");
+	     Car sp2 = new Car("PeugeotSP");
+	     listCarSP.add(new Object());
+	     listCarSP.add(new Object());
 	    
-	     affiche(listVoiture);   
+	     showCar(listCar);   
+	     showCar(listCarSP);
 	     
+	     listCar.add(new Car());            
+	     listCarSP.add(new CarNoLicense());
+	            
+	     Garage garage = new Garage();
+	     garage.add(listCar);
+	     System.out.println("--------------------------");
+//	     garage.add(listCarSP);  
+	          
+
+	     // Usage of the java File object. Create the File object
+	     File f = new File("src/Javaio.txt");
+	 	 System.out.println("Complete path : " + f.getAbsolutePath());
+	 	 System.out.println("File name : " + f.getName());
+	 	 System.out.println("Does it exist ? " + f.exists());
+	 	 System.out.println("Is a repertory? " + f.isDirectory());
+	 	 System.out.println("Is a file ? " + f.isFile());
+	    	    
+	 	 // listRoots returns File objects
+	 	 System.out.println("Units at this machin's root : ");
+	 	 for(File file : f.listRoots())
+	 	    {
+	 	    	System.out.println(file.getAbsolutePath());
+	 	    	try {
+	 	    		int i = 1;  
+	 	    		//List files and repertories
+	    	        for(File nom : file.listFiles()){
+	    	          //Add "/" for a File
+	    	          System.out.print("\t\t" + ((nom.isDirectory()) ? nom.getName()+"/" : nom.getName()));
+	    	          
+	    	          // Looks like wa have a number of variables ...
+	    	          if((i%4) == 0){
+	    	            System.out.print("\n");
+	    	          }
+	    	          i++;
+	    	        }
+	    	        System.out.println("\n");
+	    	      } catch (NullPointerException n) {
+	    	  //NullPointerException is generated when no subfolder exists
+	    	      }
+	    	    }       
+	 	 
+	 	// Work with file contents - FileInputStream anf FileOutputStream 
+	 	// The below code is basic, using methods that are based on the UNICODE 1.
+	 	// (Only a-z A_Z and numbers ASCII bytes)  
+	    // Create objects outside try/catch
+	      FileInputStream fis = null;
+	      FileOutputStream fos = null;
+	 
+	      try {
+	         fis = new FileInputStream(new File("src/Javaio.txt"));   // Input
+	         fos = new FileOutputStream(new File("src/Javaio2.txt")); // Output (new)
+	 
+	         // Create a byte buffer to indicate how many bytes are written each loop
+	         byte[] buf = new byte[8];
+	 
+	         // Read return code; -1 on EOF
+	         int n = 0;
+	 
+	         // While not EOF read adn write
+	         while ((n = fis.read(buf)) >= 0) {
+	            // Write to fos object
+	            fos.write(buf);
+	            // Show the buffer (hex bit value + corresponding char value).
+	            for (byte bit : buf) {
+	               System.out.print("\t" + bit + "(" + (char) bit + ")");
+	               System.out.println("");
+	            }
+	         }
+	         System.out.println("File has been copied.");
+	 
+	      } catch (FileNotFoundException nf) {
+	         // Trap input file's not there
+	         nf.printStackTrace();
+	      } catch (IOException nf) {
+	         // Trap read-write errors
+	         nf.printStackTrace();
+	      } finally {
+	         // Close File Streams when an exception is raised!
+	         try {
+	            if (fis != null)
+	               fis.close();
+	         } catch (IOException nf) {
+	            nf.printStackTrace();
+	         }
+	 
+	         try {
+	            if (fos != null)
+	               fos.close();
+	         } catch (IOException nf) {
+	            nf.printStackTrace();
+	         }
+	      }
+	 	 	 
+	 	
 	  } //  End of main
 
 
-static void affiche(List<? super Voiture> list){
+static void showCar(List<? super Car> list){
 	  for(Object v : list)
+	  {
 	    System.out.print(v.toString());
+	  }
 	}
 	
-
-
 } // End of class
 
 
@@ -215,19 +321,19 @@ static void affiche(List<? super Voiture> list){
 	  //Variable d'instance de type S
 	  private S value2;
 	         
-	  //Constructeur par défaut
+	  //Constructeur par dï¿½faut
 	  public Duo(){
 	    this.value1 = null;
 	    this.value2 = null;
 	  }        
 	 
-	  //Constructeur avec paramètres
+	  //Constructeur avec paramï¿½tres
 	  public Duo(T val1, S val2){
 	    this.value1 = val1;
 	    this.value2 = val2;
 	  }
 	         
-	  //Méthodes d'initialisation des deux values
+	  //Mï¿½thodes d'initialisation des deux values
 	  public void setValue(T val1, S val2){
 	    this.value1 = val1;
 	    this.value2 = val2;
@@ -238,7 +344,7 @@ static void affiche(List<? super Voiture> list){
 	    return value1;
 	  }
 	  
-	  //Définit la value T
+	  //Dï¿½finit la value T
 	  public void setValue1(T value1) {
 	    this.value1 = value1;
 	  }
@@ -248,32 +354,67 @@ static void affiche(List<? super Voiture> list){
 	    return value2;
 	  }
 	  
-	  //Définit la value S
+	  //Dï¿½finit la value S
 	  public void setValue2(S value2) {
 	    this.value2 = value2;
 	  }        
 	} // End of class Duo. 
  
- class Voiture <V> {
+ class Car <V> {
 	 private V value;
 	 
 	 // Default constructor 
-	 public Voiture(){
+	 public Car(){
 		 this.value = null;
 	 }
 	 
-	 public Voiture(V val){
+	 public Car(V val){
 		 this.value = val;
 	 }
 	 
-	 public void setVoiture(V val){
+	 public void setCar(V val){
 		 this.value = val;	 
 	 }
 	 
-	 public V getVoiture(){
+	 public V getCar(){
 		 return this.value;	 
 	 }
 	 
- } // End of class Voiture
+ } // End of class Car
+ 
+ class CarNoLicense <V> {
+	 private V value;
+	 
+	 // Default constructor 
+	 public CarNoLicense(){
+		 this.value = null;
+	 }
+	 
+	 public CarNoLicense(V val){
+		 this.value = val;
+	 }
+	 
+	 public void setCarNoLicense(V val){
+		 this.value = val;	 
+	 }
+	 
+	 public V getCarNoLicense(){
+		 return this.value;	 
+	 }
+ } // End of class CarNoLicense	 
+ 
+ class Garage {
+	  List<Car> list = new ArrayList<Car>();
+	 
+	  public void add(List<? extends Car> listcar){
+	    for(Car v : listcar)
+	      list.add(v); 
+	 
+	    System.out.println("Contenu de notre garage :");
+	    for(Car v : list)
+	      System.out.print(v.toString());       
+	   }
+ } // End of class Garage
+
 
 
