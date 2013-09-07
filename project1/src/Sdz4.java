@@ -27,6 +27,7 @@ import java.util.Hashtable;
 // Set collections
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.Set;
 // IO
 import java.io.File;
 import java.io.FileInputStream;
@@ -167,30 +168,34 @@ public class Sdz4 {
 	     Car<String> v1 = new Car<String>("Volvo");
 	     Car<String> v2 = new Car<String>("Peugeot");
 	     List<Car> listCar = new ArrayList<Car>();
-	     listCar.add(new Car(v1));
-	     listCar.add(new Car(v2));
+	     // Car<String> v1 = new Car<String>("Volvo");
+	     // Car<String> v2 = new Car<String>("Peugeot");
+		 // listCar.add(new Car(v1));
+		 // listCar.add(new Car(v2));
+	     listCar.add((Car<String>) v1);					// add is a method of List
+	     listCar.add((Car<String>) v2);					// cast Car object
 	    
 	     List<Object> listCarSP = new ArrayList<Object>();
-	     Car sp1 = new Car("VolvoSP");
-	     Car sp2 = new Car("PeugeotSP");
-	     listCarSP.add(new Object());
-	     listCarSP.add(new Object());
+	   //  Car sp1 = new Car("VolvoSP");
+	   //  Car sp2 = new Car("PeugeotSP");
+	   //  listCarSP.add(new Object()); 
+	     listCarSP.add("VolvoSP");			// add is a method of List
+	     listCarSP.add("PeugeotSP");		
 	    
 	     showCar(listCar);   
 	     showCar(listCarSP);
 	     
 	     listCar.add(new Car());            
-	     listCarSP.add(new CarNoLicense());
+	  //   listCarSP.add(new CarNoLicense());
 	            
 	     Garage garage = new Garage();
 	     garage.add(listCar);
-	     System.out.println("--------------------------");
 //	     garage.add(listCarSP);  
 	          
 
 	     // Usage of the java File object. Create the File object
 	     File f = new File("src/Javaio.txt");
-	 	 System.out.println("Complete path : " + f.getAbsolutePath());
+	 	 System.out.println("\n\nComplete path : " + f.getAbsolutePath());
 	 	 System.out.println("File name : " + f.getName());
 	 	 System.out.println("Does it exist ? " + f.exists());
 	 	 System.out.println("Is a repertory? " + f.isDirectory());
@@ -279,7 +284,7 @@ public class Sdz4 {
 static void showCar(List<? super Car> list){
 	  for(Object v : list)
 	  {
-	    System.out.print(v.toString());
+	    System.out.print("\n"+v.toString());
 	  }
 	}
 	
@@ -410,9 +415,10 @@ static void showCar(List<? super Car> list){
 	    for(Car v : listcar)
 	      list.add(v); 
 	 
-	    System.out.println("Contenu de notre garage :");
+	    System.out.println("\n\nContenu de notre garage :");
+	    System.out.println("------------------------");
 	    for(Car v : list)
-	      System.out.print(v.toString());       
+	      System.out.print("\n"+v.toString());       
 	   }
  } // End of class Garage
 
