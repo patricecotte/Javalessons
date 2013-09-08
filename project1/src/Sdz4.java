@@ -167,11 +167,12 @@ public class Sdz4 {
 	     // Genericity, collections and inheritance
 	     Car<String> v1 = new Car<String>("Volvo");
 	     Car<String> v2 = new Car<String>("Peugeot");
-	     List<Car> listCar = new ArrayList<Car>();
+	     // List<Car<String>> listCar = new ArrayList<Car<String>>();
 	     // Car<String> v1 = new Car<String>("Volvo");
 	     // Car<String> v2 = new Car<String>("Peugeot");
 		 // listCar.add(new Car(v1));
 		 // listCar.add(new Car(v2));
+	     List<Car> listCar = new ArrayList<Car>();
 	     listCar.add((Car<String>) v1);					// add is a method of List
 	     listCar.add((Car<String>) v2);					// cast Car object
 	    
@@ -193,6 +194,46 @@ public class Sdz4 {
 //	     garage.add(listCarSP);  
 	          
 
+	     // USe the generic Entry class
+	     Entry<String, String> grade440 = new Entry<String, String>("mike", "A");
+	     Entry<String, Integer> marks440 = new Entry<String, Integer>("mike", 100);
+	     System.out.println("\n\nExample of a generic class with two attributes");
+	     System.out.println("-------------------------------------------------");
+	     System.out.println("grade toString: " + grade440.toString());
+	     System.out.println("grade getKey  : " + grade440.getKey());
+	     System.out.println("grade getValue: " + grade440.getValue());
+	     System.out.println("marks: " + marks440);
+	     
+	
+	     // Test the generic method PrintArray
+	     // Create arrays of Integer, Double and Character
+	     Integer[] intArray = { 1, 2, 3, 4, 5 };
+	     Double[] doubleArray = { 1.1, 2.2, 3.3, 4.4 };
+	     Character[] charArray = { 'H', 'E', 'L', 'L', 'O' };
+
+	     System.out.println("\n\nExample of a generic method: printArray");
+	     System.out.println("-------------------------------------------");
+	     System.out.println( "Array integerArray contains:" );
+	     printArray( intArray  ); // pass an Integer array
+
+	     System.out.println( "\nArray doubleArray contains:" );
+	     printArray( doubleArray ); // pass a Double array
+
+	     System.out.println( "\nArray characterArray contains:" );
+	     printArray( charArray ); // pass a Character array
+	     
+	     // Example with the generic simple class Box
+	     Box<Integer> integerBox = new Box<Integer>();
+	     Box<String> stringBox = new Box<String>();
+	    
+	     integerBox.add(new Integer(10));
+	     stringBox.add(new String("Hello World"));
+	     System.out.println("\n\nExample of a simple generic class: Box");
+	     System.out.println("------------------------------------------");
+	     System.out.printf("Integer Value :%d\n\n", integerBox.get());
+	     System.out.printf("String Value :%s\n", stringBox.get());
+	     
+	     
 	     // Usage of the java File object. Create the File object
 	     File f = new File("src/Javaio.txt");
 	 	 System.out.println("\n\nComplete path : " + f.getAbsolutePath());
@@ -286,9 +327,21 @@ static void showCar(List<? super Car> list){
 	  {
 	    System.out.print("\n"+v.toString());
 	  }
-	}
-	
+	} // End of method
+
+//Generic method that can process different types of Arrays.
+static < E > void printArray( E[] inputArray )
+{
+// Display array elements              
+   for ( E element : inputArray ){        
+      System.out.printf( "%s ", element );
+   }
+   System.out.println();
+	}  // End of method
+
+
 } // End of class
+
 
 
 // Solo is a generic class. If public it needs to be in its own file.
@@ -421,6 +474,54 @@ static void showCar(List<? super Car> list){
 	      System.out.print("\n"+v.toString());       
 	   }
  } // End of class Garage
+ 
+ 
+ // Generic class Entry - the Entry class contains two attributes K and V
+ class Entry<K, V> {
+	 
+	  private final K key;
+	  private final V value;
+	 
+	  public Entry(K k,V v) {  
+	    key = k;
+	    value = v;   
+	  }
+	 
+	  public K getKey() {
+	    return key;
+	  }
+	 
+	  public V getValue() {
+	    return value;
+	  }
+	 
+	  public String toString() { 
+	    return "(" + key + ", " + value + ")";  
+	  }
+	}
 
+// Simple generic class 
+ class Box<T> {
 
+	  private T t;
+
+	  public void add(T t) {
+	    this.t = t;
+	  }
+
+	  public T get() {
+	    return t;
+	  }
+
+	  public static void main(String[] args) {
+	     Box<Integer> integerBox = new Box<Integer>();
+	     Box<String> stringBox = new Box<String>();
+	    
+	     integerBox.add(new Integer(10));
+	     stringBox.add(new String("Hello World"));
+
+	     System.out.printf("Integer Value :%d\n\n", integerBox.get());
+	     System.out.printf("String Value :%s\n", stringBox.get());
+	  }
+	}
 
