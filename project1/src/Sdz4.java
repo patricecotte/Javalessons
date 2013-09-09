@@ -32,8 +32,21 @@ import java.util.Set;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.DataInputStream;
+import java.io.BufferedInputStream;
 import java.io.FileOutputStream;
+import java.io.DataOutputStream;
+import java.io.BufferedOutputStream;
 import java.io.IOException;
+import java.io.Serializable;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.CharArrayReader;
+import java.io.CharArrayWriter;
+import java.io.StringReader;
+import java.io.StringWriter;
+import java.io.FileReader;
+import java.io.FileWriter;
 
 public class Sdz4 {
 
@@ -194,7 +207,18 @@ public class Sdz4 {
 //	     garage.add(listCarSP);  
 	          
 
-	     // USe the generic Entry class
+	     // Use the simple generic class box
+	     Box<Integer> integerBox = new Box<Integer>();
+	     Box<String> stringBox = new Box<String>();
+	    
+	     integerBox.add(new Integer(10));
+	     stringBox.add(new String("Hello World"));
+	     System.out.println("\n\nExample of a simple generic class Box");
+	     System.out.println("----------------------------------------");
+	     System.out.printf("Integer Value :%d\n\n", integerBox.get());
+	     System.out.printf("String Value :%s\n", stringBox.get());
+	     
+	     // Use the generic Entry class
 	     Entry<String, String> grade440 = new Entry<String, String>("mike", "A");
 	     Entry<String, Integer> marks440 = new Entry<String, Integer>("mike", 100);
 	     System.out.println("\n\nExample of a generic class with two attributes");
@@ -222,17 +246,6 @@ public class Sdz4 {
 	     System.out.println( "\nArray characterArray contains:" );
 	     printArray( charArray ); // pass a Character array
 	     
-	     // Example with the generic simple class Box
-	     Box<Integer> integerBox = new Box<Integer>();
-	     Box<String> stringBox = new Box<String>();
-	    
-	     integerBox.add(new Integer(10));
-	     stringBox.add(new String("Hello World"));
-	     System.out.println("\n\nExample of a simple generic class: Box");
-	     System.out.println("------------------------------------------");
-	     System.out.printf("Integer Value :%d\n\n", integerBox.get());
-	     System.out.printf("String Value :%s\n", stringBox.get());
-	     
 	     
 	     // Usage of the java File object. Create the File object
 	     File f = new File("src/Javaio.txt");
@@ -242,7 +255,7 @@ public class Sdz4 {
 	 	 System.out.println("Is a repertory? " + f.isDirectory());
 	 	 System.out.println("Is a file ? " + f.isFile());
 	    	    
-	 	 // listRoots returns File objects
+	 	 /* listRoots returns File objects
 	 	 System.out.println("Units at this machin's root : ");
 	 	 for(File file : f.listRoots())
 	 	    {
@@ -254,7 +267,7 @@ public class Sdz4 {
 	    	          //Add "/" for a File
 	    	          System.out.print("\t\t" + ((nom.isDirectory()) ? nom.getName()+"/" : nom.getName()));
 	    	          
-	    	          // Looks like wa have a number of variables ...
+	    	          // Looks like we have a number of variables ...
 	    	          if((i%4) == 0){
 	    	            System.out.print("\n");
 	    	          }
@@ -265,6 +278,7 @@ public class Sdz4 {
 	    	  //NullPointerException is generated when no subfolder exists
 	    	      }
 	    	    }       
+	 	 */
 	 	 
 	 	// Work with file contents - FileInputStream anf FileOutputStream 
 	 	// The below code is basic, using methods that are based on the UNICODE 1.
@@ -283,7 +297,9 @@ public class Sdz4 {
 	         // Read return code; -1 on EOF
 	         int n = 0;
 	 
-	         // While not EOF read adn write
+	         // While not EOF read and write
+		     System.out.println("\n\nExample using the File methods");
+		     System.out.println("---------------------------------");
 	         while ((n = fis.read(buf)) >= 0) {
 	            // Write to fos object
 	            fos.write(buf);
@@ -317,8 +333,216 @@ public class Sdz4 {
 	            nf.printStackTrace();
 	         }
 	      }
-	 	 	 
+	 
+	    //  Compare the File method and Buffer methods 
+	      FileInputStream fis2;				// Create our 4 objects
+	      FileOutputStream fos2;
+	      BufferedInputStream bis2;         // outside the try-catch structure
+	      BufferedOutputStream bos2;
+	      try {
+	        fis2 = new FileInputStream(new File("Dictionnaire.txt"));
+	        fos2 = new FileOutputStream(new File("Dictionnaire2.txt"));
+	        bis2 = new BufferedInputStream(new FileInputStream(new File("Dictionnaire.txt")));
+	        bos2 = new BufferedOutputStream(new FileOutputStream(new File("Dictionnaire3.txt")));
+	        
+	        byte[] buf = new byte[8];
+	   
+		     System.out.println("\n\nCompare the File and Buffered methods");
+		     System.out.println("---------------------------------");
+	        //Note the system clock, read until EOF and show the elapsed time.
+	        long startTime = System.currentTimeMillis();
+	        while(fis2.read(buf) != -1) {
+	        		fos2.write(buf);}
+	        System.out.println("FileInput/OutputStream read elapsed time: " + (System.currentTimeMillis() - startTime));
+	                   
+	        //Same using the BufferInputStream object and method.              
+	        startTime = System.currentTimeMillis();
+	        while(bis2.read(buf) != -1){
+	        	 bos2.write(buf);
+	        }
+	        System.out.println("BufferedInput/OutputStream read elapsed time: " + (System.currentTimeMillis() - startTime));
+	                   
+	        //Close the file objects
+	        fis2.close();
+	        fos2.close();
+	        bis2.close();
+	        bos2.close();
+	                   
+	      } catch (FileNotFoundException e2) {
+	        e2.printStackTrace();
+	      } catch (IOException e2) {
+	        e2.printStackTrace();
+	      }       
 	 	
+	      
+	    // Example with the DataInput/OuputStream.
+	      DataInputStream dis;							// Set up two objects
+	      DataOutputStream dos;
+	      try {											// note the cascading instantiation
+	        dos = new DataOutputStream(
+	                new BufferedOutputStream(
+	                  new FileOutputStream(
+	                    new File("Dataio.txt"))));
+	   
+		    System.out.println("\n\nAn example with the DataInput/Output methods");
+		    System.out.println("---------------------------------");
+	        //In order to use this technique we need to know the structure of the record
+	        dos.writeBoolean(true);
+	        dos.writeByte(100);
+	        dos.writeChar('C');
+	        dos.writeDouble(12.05);
+	        dos.writeFloat(100.52f);
+	        dos.writeInt(1024);
+	        dos.writeLong(123456789654321L);
+	        dos.writeShort(2);
+	        dos.close();
+	               
+	        //Read back our line 
+	        dis = new DataInputStream(					// note the cascading instantiation
+	                new BufferedInputStream(
+	                  new FileInputStream(
+	                    new File("Dataio.txt"))));
+	               
+	        System.out.println(dis.readBoolean());
+	        System.out.println(dis.readByte());
+	        System.out.println(dis.readChar());
+	        System.out.println(dis.readDouble());
+	        System.out.println(dis.readFloat());
+	        System.out.println(dis.readInt());
+	        System.out.println(dis.readLong());
+	        System.out.println(dis.readShort());
+	               
+	      } catch (FileNotFoundException d) {
+	        d.printStackTrace();
+	      } catch (IOException d) {
+	        d.printStackTrace();
+	      }      
+	      
+	      
+	    // Example with serializable objects
+	      ObjectInputStream ois;					// create 2 objects
+	      ObjectOutputStream oos;					// outside try-catch
+	      try {
+	        oos = new ObjectOutputStream(			// Inheritance ... 
+	                new BufferedOutputStream(
+	                  new FileOutputStream(
+	                    new File("game.txt"))));
+	               
+	        //write Game objects into the text filer
+	        oos.writeObject(new Game("Assassin Creed", "Adventure", 45.69));
+	        oos.writeObject(new Game("Tomb Raider", "Plateform", 23.45));
+	        oos.writeObject(new Game("Tetris", "Strategy", 2.50));
+	        // and close the flow.
+	        oos.close();
+	               
+	        //Read the objects
+	        ois = new ObjectInputStream(
+	                new BufferedInputStream(
+	                  new FileInputStream(
+	                    new File("game.txt"))));
+	               
+	        try {				
+	          System.out.println("\n\nGame store :");
+	          System.out.println("-------------------------\n");
+	          System.out.println(((Game)ois.readObject()).toString());
+	          System.out.println(((Game)ois.readObject()).toString());
+	          System.out.println(((Game)ois.readObject()).toString());
+	          // ClassNotFoundException when deserializing ... 
+	        } catch (ClassNotFoundException g1) {
+	          g1.printStackTrace();
+	        }
+	       
+	        ois.close();		// close flow
+	               
+	      } catch (FileNotFoundException g2) {
+	        g2.printStackTrace();
+	      } catch (IOException g2) {
+	        g2.printStackTrace();
+	      }       
+	      
+	  // Example with the CharArrayRead/Write objects
+	      CharArrayWriter cw = new CharArrayWriter();
+	      CharArrayReader cr;
+	           
+	      try {
+	        cw.write("Hello dummies");	     	// We write this buffer
+	        System.out.println(cw);				// Implicit call to toString()
+	               
+	        //cw.close() has no effect on the stream; only cw.reset can delete it
+	        cw.close();
+	               
+	        //Define cr; passing the result of toCharArray to cw
+	        cr = new CharArrayReader(cw.toCharArray());
+	        int i;
+	        
+	        String str = "";
+	        while(( i = cr.read()) != -1)		// Copy all characters from cr to a string
+	          str += (char) i;
+	        System.out.println("\nAn example using CharArrayRead/Write");
+	        System.out.println("-------------------------------------");
+	        System.out.println(str);
+	   
+	      } catch (IOException c) {
+	        c.printStackTrace();
+	      }
+	      
+	      
+	    // Same example with StrinRead/Write
+	      StringWriter sw = new StringWriter();
+	      StringReader sr;
+	           
+	      try {
+	        sw.write("Hello dummies");
+	        System.out.println(sw);
+	               
+	        //sw.close() has no effect on the stream, use sw.reset() to clear it.
+	        sw.close();
+	               
+	        sr = new StringReader(sw.toString());         
+	        int i ;
+	        
+	        String str = "";
+	        while(( i = sr.read()) != -1)
+	          str += (char) i;
+	        System.out.println("\nAn example using StringRead/Write");
+	        System.out.println("-------------------------------------");
+	        System.out.println(str);
+	   
+	      } catch (IOException s) {
+	        s.printStackTrace();
+	      }
+	      
+	      
+	  // An example with the FileWriter/Reader, PrintWriter/Reader objects
+	      File file = new File("testFileWriter.txt");
+	      FileWriter fw;
+	      FileReader fr;
+	           
+	      try {
+	        fw = new FileWriter(file);		// Create our object
+	        System.out.println("\nAn example using FileRead/Write");
+	        System.out.println("-------------------------------------");
+	        String str = "Hello dear dummy friends !\n";
+	        str += "\tHow are you ? \n";
+	        
+	        fw.write(str);					// write the string
+	        fw.close();						// close the stream 
+	               
+	        fr = new FileReader(file);		// create our Read object
+	        str = "";
+	        int i = 0;
+	        
+	        while((i = fr.read()) != -1)	// read till EOF
+	          str += (char)i;
+	   
+	        System.out.println(str);		// print string
+	   
+	      } catch (FileNotFoundException s2) {
+	        s2.printStackTrace();
+	      } catch (IOException s2) {
+	        s2.printStackTrace();
+	      }
+	      
 	  } //  End of main
 
 
@@ -513,15 +737,40 @@ static < E > void printArray( E[] inputArray )
 	    return t;
 	  }
 
-	  public static void main(String[] args) {
-	     Box<Integer> integerBox = new Box<Integer>();
-	     Box<String> stringBox = new Box<String>();
-	    
-	     integerBox.add(new Integer(10));
-	     stringBox.add(new String("Hello World"));
-
-	     System.out.printf("Integer Value :%d\n\n", integerBox.get());
-	     System.out.printf("String Value :%s\n", stringBox.get());
+	}
+ 
+ // A Serializable class implements Seializable
+ class Game implements Serializable{
+	  private String nom, style;
+	  private double prix;
+	  private transient Notice notice;
+	     
+	  public Game(String nom, String style, double prix) {
+	    this.nom = nom;
+	    this.style = style;
+	    this.prix = prix;
+	    this.notice = new Notice();			// Set the default notice
+	  }
+	     
+	  public String toString(){
+	    return "Nom du jeu : " + this.nom + "\nStyle de jeu : " + this.style + 
+	    		"\nPrix du jeu : " + this.prix + "\n";
+	  } 
+	}
+ 
+ // The Notice class
+ class Notice {
+	  private String language ;
+	  // Default constructor - french notice
+	  public Notice(){
+	    this.language = "French";
+	  }
+	  // For other notices
+	  public Notice(String lang){
+	    this.language = lang;
+	  }
+	  public String toString() {
+	    return "\t Notice is in : " + this.language + "\n";
 	  }
 	}
 
