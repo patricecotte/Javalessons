@@ -1,19 +1,26 @@
 
 
 import java.io.BufferedInputStream;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.nio.ByteBuffer;
 import java.nio.CharBuffer;
 import java.nio.channels.FileChannel;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.DirectoryStream;
+import java.nio.file.FileSystem;
 import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 	
 public class Sdz5 {
 
@@ -22,7 +29,8 @@ public class Sdz5 {
 	 * for each type of data: IntBuffer, CharBuffer, ShortBuffer, ByteBuffer, DoubleBuffer,
 	 * FloatBuffer and LongBuffer
 	 * Try-with-resources (java 7)
-	 * java.nio 2 library (java 7)
+	 * java.nio 2 library (java 7); Paths and Files methods
+	 * Support of zip
 	 */
 	
 	public static void main(String[] args) {
@@ -135,6 +143,87 @@ public class Sdz5 {
 		 	  }
 		 	}
 		    
+		 	
+		 // Example of a copy, move.
+		 // StandardCopyOption can take several values: REPLACE_EXISTING,
+		 // COPY_ATTRIBUTES, ATOMIC_MOVE (?). There is also a LinkOption that
+		 // can be set to NOFOLLOW_LINKS not to copy links
+		 	Path source = Paths.get("src/Javaio.txt");
+		 	Path copy = Paths.get("src/Javaio_copy.txt");
+		 	System.out.println("\n\n Starting to copy file");
+		 	System.out.println("--------------------------");
+		 	try {
+		 	  Files.copy(source, copy, StandardCopyOption.REPLACE_EXISTING);
+		 	} catch (IOException e4) { e4.printStackTrace();  }
+		 	
+		 	// Move=Copy to target+Delete source
+		 	Path move = Paths.get("src/Javaio_move.txt");
+		 	System.out.println("\n\n Starting to move file");
+		 	System.out.println("--------------------------");
+		 	try {
+		 	  Files.move(copy, move, StandardCopyOption.REPLACE_EXISTING);
+		 	} catch (IOException e5) { e5.printStackTrace();  }
+		 	
+		 	// Delete the 'move' file
+		 	System.out.println("\n\n Deleting the move file");
+		 	System.out.println("--------------------------");
+		 	try{
+		 		Files.delete(move);
+		 	} catch (IOException e6) {e6.printStackTrace(); }
+		 	
+		 	
+		 // Use streams to process files.
+		 /*
+		 	try ( InputStream input = Files.newInputStream(source) ) { }
+		 		catch (IOException e7) {e7.printStackTrace(); }
+		 	 
+		 	//Ouverture en écriture :
+		 	try ( OutputStream output = Files.newOutputStream(source) )  { }
+	 		catch (IOException e7) {e7.printStackTrace(); }
+		 	 
+		 	//Ouverture d'un Reader en lecture :
+		 	try ( BufferedReader reader = Files.newBufferedReader(source, StandardCharsets.UTF_8) )  { }
+	 		catch (IOException e7) {e7.printStackTrace(); }
+		 	 
+		 	//Ouverture d'un Writer en écriture :
+		 	try ( BufferedWriter writer = Files.newBufferedWriter(source, StandardCharsets.UTF_8) )  { }
+	 		catch (IOException e7) {e7.printStackTrace(); }
+		*/
+		 //	Support of ZIPs
+		 	try (FileSystem zipFS = FileSystems.newFileSystem(Paths.get("myZip.zip"), null)) {
+		 	 
+		 	  Files.deleteIfExists( zipFS.getPath("test.txt") );     //delete an existing entry if it exists
+		 	 
+		 	  //Création d'un fichier à l'intérieur du ZIP :
+		 	  Path pathz = zipFS.getPath("newtest.txt");			 //create an entry 
+		 	  String message = "Hello World !!!";
+		 	  Files.write(pathz, message.getBytes());
+		 	 
+		 	  //Get the zip directory
+		 	  try (DirectoryStream<Path> stream = Files.newDirectoryStream(zipFS.getPath("/"))) {
+		 	    for (Path entry : stream) {
+		 	      System.out.println(entry);
+		 	    }
+		 	  }
+		 	 
+		 	  //Copy a file to a zip file
+		 	    Files.copy(Paths.get("src/Javaio.txt"), zipFS.getPath("myZIP.txt"));
+		 	} catch (IOException e8) {e8.printStackTrace(); }
+		 	
+		 	
+		 // The WatchService allows to the program to be aware when a file is modified
+		 	
+		 // The AsynchronousFile*, AsynchronousSocket*, AsynchronousServer* objects
+		 // are used for asynchronous file processing.
+		 	
+		 // 6 Views are available:
+		 //	- BasicFileAttributeView 
+		 // - DosFileAttributeViewajoute le support des attributs MS-DOS (readonly, hidden, system, archive) 
+		 // - PosixFileAttributeView adds Posix attributes to the BasicFileAttributes
+		 // - FileOwnerAttributeView 
+		 // - AclFileAttributeView = access list
+		 // - UserDefinedFileAttributeView = customized (?) attributes
+		 	
 	} // End of main
 
 } // End of class 
