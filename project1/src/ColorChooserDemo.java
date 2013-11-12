@@ -130,7 +130,7 @@ public class ColorChooserDemo extends JPanel
     
     public void stateChanged(ChangeEvent e) {
         newColor = tcc.getColor();
-        System.out.println("new color: "+newColor);
+        //System.out.println("new color: "+newColor);
         // banner.setForeground(newColor);
     }
    
@@ -180,6 +180,7 @@ public class ColorChooserDemo extends JPanel
     	  public void run() {
     	        System.out.println("Running thread");
     	        ccd.createAndShowGUI();
+    	        System.out.println("new color: "+newColor);
     	  }                           
      } // End of Runimpl class   
     
