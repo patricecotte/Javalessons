@@ -1,7 +1,14 @@
 package com.sdz.observer;
-/*
- * Observer:	interface that keeps Window1 posted of changes in the hour
+/**
+ * <b>Observer:	interface that keeps views posted of changes </b>
+ * <ul>
+ * <li> - Window1
+ * <li>	- to be specified
+ * </ul>
+ * @author			Patrice Cotte
+ * @version			1.0
  */
 public interface Observer {
-	 public void update(String hour);
+	 // update is mandatory in the Observer  
+	 public void update(String string);
 }

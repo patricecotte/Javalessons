@@ -67,4 +67,7 @@ public void updateObserver() {
 	      obs.update(this.hour);
 	}
   
+public void notifyObserver(String s){
+	// Not used, but required by the Observable class
+}
 } // End of Clock class

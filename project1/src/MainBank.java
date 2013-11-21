@@ -23,7 +23,7 @@ public class MainBank {
 			  this.solde = this.solde + s;
 			  System.out.println("New amount in account: "+s);
 		  }
-		  public void retraitArgent(int retrait){
+		  public synchronized void retraitArgent(int retrait){
 		    solde = solde - retrait; 
 		    System.out.println("Solde = " + solde);                 
 		  }
@@ -40,7 +40,7 @@ public class MainBank {
 		    this.ba = ba;
 		    this.name = n;
 		  }
-		  public void run() {
+		  public synchronized void run() {
 		    for(int i = 0; i < 25; i++){
 		      if(ba.getSolde() > 0){
 		        ba.retraitArgent(2);

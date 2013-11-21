@@ -14,50 +14,72 @@
 	 *  - Genericy and collections
 	 *  - Genericiy, collections and inheritance.
 	 *  java.io.File and Unit and File access. Other File methods; delete, mkdir
+	 *  Sdz4 finally displays a GUI with the tree for units C and D (the two first found
+	 *  units).
 	 */
 	
 // LinkedList collections.
-import java.util.LinkedList;			
-import java.util.List;
-import java.util.ListIterator;
-import java.util.ArrayList;
-// Map collections
-import java.util.Enumeration;	
-import java.util.Hashtable;
-// Set collections
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.Set;
-// IO
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
+import java.io.CharArrayReader;
+import java.io.CharArrayWriter;
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.DataInputStream;
-import java.io.BufferedInputStream;
 import java.io.FileOutputStream;
-import java.io.DataOutputStream;
-import java.io.BufferedOutputStream;
-import java.io.IOException;
-import java.io.Serializable;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.io.CharArrayReader;
-import java.io.CharArrayWriter;
-import java.io.StringReader;
-import java.io.StringWriter;
 import java.io.FileReader;
 import java.io.FileWriter;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
+import java.io.StringReader;
+import java.io.StringWriter;
+import java.util.ArrayList;
+import java.util.Enumeration;
+import java.util.HashSet;
+import java.util.Hashtable;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.ListIterator;
 
-public class Sdz4 {
+import javax.swing.JFrame;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JSplitPane;
+import javax.swing.JTextArea;
+import javax.swing.JTree;
+import javax.swing.event.TreeSelectionEvent;
+import javax.swing.event.TreeSelectionListener;
+import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.tree.TreePath;
+// Map collections
+// Set collections
+// IO
 
+public class Sdz4 extends JFrame{
 
+	// These objects are for the GUI 
+	private static final long serialVersionUID = 1L;
+	private JTree arbre;
+	private DefaultMutableTreeNode racine;
+	private Panneau panneau = new Panneau();
+	
+	/*
+	 * This is the entry point
+	 */
 	public static void main(String[] args) {
 	    // Linked list
 	    List l = new LinkedList();					// Create LinkeList
 	    l.add(12);									// Add 3 elements
 	    l.add("Dilbert !");
 	    l.add(12.20f);
-	 
+	    
 	    for(int i = 0; i < l.size(); i++)
 	    {
 	      // Use the get method on the index
@@ -543,15 +565,20 @@ public class Sdz4 {
 	        s2.printStackTrace();
 	      }
 	      
-	  } //  End of main
+	      // show GUI
+	      Sdz4 sdz4 = new Sdz4();
+	      
+} //  End of main
 
-
+/*
+ * The two below  methods are used by the batch activities	
+ */
 static void showCar(List<? super Car> list){
 	  for(Object v : list)
 	  {
 	    System.out.print("\n"+v.toString());
 	  }
-	} // End of method
+} // End of method
 
 //Generic method that can process different types of Arrays.
 static < E > void printArray( E[] inputArray )
@@ -561,15 +588,118 @@ static < E > void printArray( E[] inputArray )
       System.out.printf( "%s ", element );
    }
    System.out.println();
-	}  // End of method
+}  // End of method printArray
 
 
-} // End of class
+public Sdz4(){
+		System.out.println("Starting the GUI part");
+	    this.setSize(300, 300);
+	    this.setLocationRelativeTo(null);
+	    this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+	    this.setTitle("Les arbres");
+	    //On invoque la méthode de construction de l'arbre
+	    listRoot();
+	    System.out.println("Done with the tree build");   
+	    this.setVisible(true);
+}
+	 
+private void listRoot(){      
+	    this.racine = new DefaultMutableTreeNode();       
+	    int count1 = 0;
+	    for(File file : File.listRoots()){
+	      DefaultMutableTreeNode lecteur = 
+	      new DefaultMutableTreeNode(file.getAbsolutePath());
+	      try {
+	        for(File nom : file.listFiles()){
+	          DefaultMutableTreeNode node = new DefaultMutableTreeNode(nom.getName()+"\\");               
+	          lecteur.add(this.listFile(nom, node));               
+	        }
+	      } catch (NullPointerException e) {}
+	 
+	      this.racine.add(lecteur);    
+	      ++count1;
+	      if (count1 == 2) break;   // limit to 2 units
+	    }
+	    //Create a tree based on the roots we got; add a listener to the Tree
+	    arbre = new JTree(this.racine);     
+	    arbre.setRootVisible(false);
+	    arbre.addTreeSelectionListener(new TreeSelectionListener(){
+	    	// the listener must implement ValueChanged; the listener prints the
+	    	// name of the folder being clicked, its path, collects information about
+	    	// this file and shows it in the information panel.
+	        public void valueChanged(TreeSelectionEvent event) {
+	          if(arbre.getLastSelectedPathComponent() != null){
+	            System.out.println(arbre.getLastSelectedPathComponent().toString()+
+	            		", "+getAbsolutePath(event.getPath()));
+	            File file= new File(getAbsolutePath(event.getPath()));
+	            // ... Exception 
+	            //panneau.setTexte(getDescription(file));
+	          }
+	        }
+	       private String getAbsolutePath(TreePath treePath){
+	            String str = "";
+	            //On balaie le contenu de l'objet TreePath
+	            for(Object name : treePath.getPath()){
+	              //Si l'objet a un nom, on l'ajoute au chemin
+	              if(name.toString() != null)
+	                str += name.toString();
+	            }
+	            return str;
+	       }
+	       private String getDescription(File file){
+	           String str = "Chemin d'accès sur le disque : \n\t" + file.getAbsolutePath() + "\n";
+	           str += (file.isFile()) ? "Je suis un fichier.\nJe fais " + file.length() + " ko\n" : "Je suis un dossier.\n";
+	           str += "J'ai des droits : \n";
+	           str += "\t en lecture : " + ((file.canRead()) ? "Oui;" : "Non;");
+	           str += "\n\t en écriture : " + ((file.canWrite()) ? "Oui;" : "Non;");
+	           return str;
+	         }
+	      });
+	    //Que nous plaçons sur le ContentPane de notre JFrame à l'aide d'un scroll 
+	    this.getContentPane().add(new JScrollPane(arbre));
+	    //On crée un séparateur de conteneur pour réviser
+	    JSplitPane split = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, new JScrollPane(arbre), new JScrollPane(panneau));
+	    //On place le séparateur
+	    split.setDividerLocation(200);
+	    //On ajoute le tout
+	    this.getContentPane().add(split, BorderLayout.CENTER);	    
+}
+	 
+private DefaultMutableTreeNode listFile(File file, DefaultMutableTreeNode node){
+	    int count = 0;
+	       
+	    if(file.isFile())
+	      return new DefaultMutableTreeNode(file.getName());
+	    else{
+	      File[] list = file.listFiles();
+	      if(list == null)
+	        return new DefaultMutableTreeNode(file.getName());
+	 
+	      for(File nom : list){
+	        count++;
+	        //Pas plus de 5 enfants par noeud
+	        if(count < 5){
+	          DefaultMutableTreeNode subNode;
+	          if(nom.isDirectory()){
+	            subNode = new DefaultMutableTreeNode(nom.getName()+"\\");
+	            node.add(this.listFile(nom, subNode));
+	          }else{
+	            subNode = new DefaultMutableTreeNode(nom.getName());
+	          }
+	          node.add(subNode);
+	        }
+	      }
+	      return node;
+	    }
+} 
+
+
+} // End of class Sdz4
 
 
 
 // Solo is a generic class. If public it needs to be in its own file.
- class Solo<T> {
+class Solo<T> {
 	  
 	  //private instantiation variable
 	  private T value;
@@ -593,7 +723,7 @@ static < E > void printArray( E[] inputArray )
 	  public T getValue(){
 	    return this.value;
 	  }       
-	} // End of class Solo
+} // End of class Solo
  
  // Duo is another example of a generic class. 
  class Duo<T, S> { 
@@ -640,9 +770,9 @@ static < E > void printArray( E[] inputArray )
 	  public void setValue2(S value2) {
 	    this.value2 = value2;
 	  }        
-	} // End of class Duo. 
+} // End of class Duo. 
  
- class Car <V> {
+class Car <V> {
 	 private V value;
 	 
 	 // Default constructor 
@@ -662,9 +792,9 @@ static < E > void printArray( E[] inputArray )
 		 return this.value;	 
 	 }
 	 
- } // End of class Car
+} // End of class Car
  
- class CarNoLicense <V> {
+class CarNoLicense <V> {
 	 private V value;
 	 
 	 // Default constructor 
@@ -722,7 +852,7 @@ static < E > void printArray( E[] inputArray )
 	  public String toString() { 
 	    return "(" + key + ", " + value + ")";  
 	  }
-	}
+} // End of Entry class
 
 // Simple generic class 
  class Box<T> {
@@ -737,11 +867,15 @@ static < E > void printArray( E[] inputArray )
 	    return t;
 	  }
 
-	}
+} // End of Box class
  
- // A Serializable class implements Seializable
+ // A Serializable class implements Serializable
  class Game implements Serializable{
-	  private String nom, style;
+	  /**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	private String nom, style;
 	  private double prix;
 	  private transient Notice notice;
 	     
@@ -756,7 +890,7 @@ static < E > void printArray( E[] inputArray )
 	    return "Nom du jeu : " + this.nom + "\nStyle de jeu : " + this.style + 
 	    		"\nPrix du jeu : " + this.prix + "\n";
 	  } 
-	}
+} // End of Game class
  
  // The Notice class
  class Notice {
@@ -772,5 +906,22 @@ static < E > void printArray( E[] inputArray )
 	  public String toString() {
 	    return "\t Notice is in : " + this.language + "\n";
 	  }
-	}
+} // End fo Notice class
 
+ 
+ /*
+  * Panneau describes the inforamtion part of the GUI
+  */
+ class Panneau extends JPanel {
+	  private String texte = "Racine de l'arbre.";
+	  private JTextArea jta;
+	     
+	  public Panneau(){
+	    this.jta = new JTextArea(texte);
+	    this.setBackground(Color.white);
+	    this.add(jta);
+	  }
+	  public void setTexte(String texte) {
+	    this.jta.setText(texte);
+	  }
+	}
